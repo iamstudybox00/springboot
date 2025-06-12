@@ -78,4 +78,46 @@ public class MainController
 	{
 		return "member/result";
 	}
+	
+	@RequestMapping("/memberLogin.do")
+	public String memberLogin()
+	{
+		return "member/login";
+	}
+	
+	// 내가한거
+//	@RequestMapping("loginProcess.do")
+//	public String loginProcess(@RequestParam("id") String id, 
+//			@RequestParam("passwd") String passwd, Model model)
+//	{
+//		model.addAttribute("id", id);
+//		model.addAttribute("passwd", passwd);
+//		return "member/loginResult";
+//	}
+	
+//  방법1 커맨드 객체를 통해 폼값을받음
+//	@RequestMapping("loginProcess.do")
+//	public String loginProcess(QuizVO quizVO)
+//	{
+//		return "member/loginResult";
+//	}
+	
+//  방법2 request내장객체를 통해 폼값을 받음
+	@RequestMapping("loginProcess.do")
+	public String loginProcess(HttpServletRequest req, Model model)
+	{
+		String id = req.getParameter("id");
+		String pass1 = req.getParameter("pass1");
+		System.out.println("id = " + id);
+		System.out.println("pass = " + pass1);
+		
+		QuizVO quizVO = new QuizVO();
+//		quizVO.setId(id);
+//		quizVO.setPass1(pass1);
+		
+		model.addAttribute("quizVO", quizVO);
+		return "member/loginResult";
+	}
+	
+	
 }
