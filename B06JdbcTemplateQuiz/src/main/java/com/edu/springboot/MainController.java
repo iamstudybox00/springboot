@@ -15,11 +15,11 @@ import com.edu.springboot.jdbc.MemberDTO;
 public class MainController
 {
 
-    private final B06JdbcTemplateApplication b06JdbcTemplateApplication;
+    private final B06JdbcTemplateQuizApplication b06JdbcTemplateApplication;
 	@Autowired
 	IMemberService dao;
 
-    MainController(B06JdbcTemplateApplication b06JdbcTemplateApplication) {
+    MainController(B06JdbcTemplateQuizApplication b06JdbcTemplateApplication) {
         this.b06JdbcTemplateApplication = b06JdbcTemplateApplication;
     }
 	
