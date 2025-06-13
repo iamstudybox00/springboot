@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.edu.springboot.B06JdbcTemplateQuizApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,14 +16,37 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberDAO implements IMemberService
 {
+
+    private final B06JdbcTemplateQuizApplication b06JdbcTemplateQuizApplication;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+    MemberDAO(B06JdbcTemplateQuizApplication b06JdbcTemplateQuizApplication) {
+        this.b06JdbcTemplateQuizApplication = b06JdbcTemplateQuizApplication;
+    }
+	
+//	@Override
+//	public List<MemberDTO> select()
+//	{
+//		String sql = "SELECT * FROM member "
+//				+ " ORDER BY regidate DESC ";
+//		
+//		return jdbcTemplate.query(sql, 
+//				new BeanPropertyRowMapper<MemberDTO>(MemberDTO.class));
+//	}
 	
 	@Override
-	public List<MemberDTO> select()
+	public List<MemberDTO> select(MemberDTO memberDTO)
 	{
-		String sql = "SELECT * FROM member "
-				+ " ORDER BY regidate DESC ";
+		String sql = "SELECT * FROM member ";
+		
+		if(memberDTO.getSearchKeyword() != null && 
+				!memberDTO.getSearchKeyword().equals(""))
+		{
+			sql += "WHERE " + memberDTO.getSearchField() + " LIKE '%" + memberDTO.getSearchKeyword() + "%'";	
+		}
+		sql += " ORDER BY regidate DESC ";
+		System.out.println(sql);
 		
 		return jdbcTemplate.query(sql, 
 				new BeanPropertyRowMapper<MemberDTO>(MemberDTO.class));

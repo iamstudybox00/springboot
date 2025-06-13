@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.edu.springboot.jdbc.IMemberService;
 import com.edu.springboot.jdbc.MemberDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class MainController
 {
@@ -30,9 +32,11 @@ public class MainController
 	}
 	
 	@RequestMapping("list.do")
-	public String member2(Model model)
+	public String member2(Model model, HttpServletRequest req, MemberDTO memberDTO)
 	{
-		model.addAttribute("memberList", dao.select());
+		memberDTO.setSearchField(req.getParameter("searchField"));
+		memberDTO.setSearchKeyword(req.getParameter("searchKeyword"));
+		model.addAttribute("memberList", dao.select(memberDTO));
 		
 		return "list";
 	}
