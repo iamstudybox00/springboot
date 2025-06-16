@@ -11,6 +11,7 @@
 		function validateForm(frm){
 			if(frm.searchKeyword.value == ""){
 				alert("검색어를 입력하세요");
+				frm.searchKeyword.focus();
 				return false;
 			}
 		}
