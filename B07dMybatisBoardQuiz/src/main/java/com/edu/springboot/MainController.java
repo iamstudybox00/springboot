@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +23,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class MainController
 {
 
-    private final B07dMybatisBoardApplication b07dMybatisBoardApplication;	
+    private final B07dMybatisBoardQuizApplication b07dMybatisBoardApplication;	
 	@Autowired
 	IBoardService dao;
 
-    MainController(B07dMybatisBoardApplication b07dMybatisBoardApplication) {
+    MainController(B07dMybatisBoardQuizApplication b07dMybatisBoardApplication) {
         this.b07dMybatisBoardApplication = b07dMybatisBoardApplication;
     }
 	
@@ -36,14 +37,19 @@ public class MainController
 		return "home";
 	}
 	
+	@Value("#{myprops['my.pageSize']}")
+	int propPageSize;
+	@Value("#{myprops['my.blockPage']}")
+	int propBlockPage;
+	
 	@RequestMapping("/list.do")
 	public String boardList(Model model, HttpServletRequest req, 
 			ParameterDTO parameterDTO)
 	{
 		int totalCount = dao.getTotalCount(parameterDTO);
 		
-		int pageSize = 2;
-		int blockPage = 2;
+		int pageSize = this.propPageSize;
+		int blockPage = this.propBlockPage;
 		int pageNum = (req.getParameter("pageNum") == null 
 			|| req.getParameter("pageNum").equals(""))
 			? 1 : Integer.parseInt(req.getParameter("pageNum"));
