@@ -1,11 +1,16 @@
 package com.edu.springboot.auth;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -16,6 +21,9 @@ import jakarta.servlet.DispatcherType;
 @Configuration
 public class WebSecurityConfig
 {
+	@Autowired
+	public MyAuthFailureHandler myAuthFailureHandler;
+	
 	@Bean
 	public SecurityFilterChain filterChanin(HttpSecurity http) throws Exception
 	{
@@ -30,35 +38,38 @@ public class WebSecurityConfig
 				.anyRequest().authenticated()
 			);
 		
-		http.formLogin((formLogin) -> formLogin.permitAll());
+		http.formLogin((formLogin) -> formLogin
+				.loginPage("/myLogin.do")
+				.loginProcessingUrl("/myLoginAction.do")
+//				.failureUrl("/myError.do")
+				.failureHandler(myAuthFailureHandler)
+				.usernameParameter("my_id")
+				.passwordParameter("my_pass")
+				.permitAll());
 		
-		http.logout((logout) -> logout.permitAll());
+		http.logout((logout) -> logout
+				.logoutUrl("/myLogout.do")
+				.logoutSuccessUrl("/")
+				.permitAll());
+		
+		http.exceptionHandling((expHandling) -> expHandling
+				.accessDeniedPage("/denied.do"));
 		
 		return http.build();
 	}
 	
-	@Bean
-	public UserDetailsService users()
-	{
-		UserDetails user = User.builder()
-				.username("user")
-				.password(passwordEncoder().encode("1234"))
-				.roles("USER")
-				.build();
-		
-		UserDetails admin = User.builder()
-				.username("admin")
-				.password(passwordEncoder().encode("1234"))
-				.roles("USER", "ADMIN")
-				.build();
-		
-		// 메모리에 사용자 정보를 담는다.
-		return new InMemoryUserDetailsManager(user, admin);
-	}
+	@Autowired
+	private DataSource dataSource;
 	
-	// 패스워드 인코더(암호화)
-	public PasswordEncoder passwordEncoder()
+	@Autowired
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		auth.jdbcAuthentication()
+			.dataSource(dataSource)
+			.usersByUsernameQuery("SELECT user_id, user_pw, enabled "
+					+ " FROM security_admin WHERE user_id = ? ")
+			.authoritiesByUsernameQuery("SELECT user_id, authority "
+					+ " FROM security_admin WHERE user_id = ? ")
+			.passwordEncoder(new BCryptPasswordEncoder());
 	}
 }

@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -21,15 +20,11 @@
 			}
 		</script>
 		
-		<h2>Spring Security 기본</h2>
+		<h2>파일업로드</h2>
 		<ul>
-			<li><a href="/guest/index.do">Guest</a></li>
-			<li><a href="/member/index.do">Member</a></li>
-			<li><a href="/admin/index.do">Admin</a></li>
+			<li><a href="/fileUpload.do">파일업로드(싱글파일)</a></li>
+			<li><a href="/multiFileUpload.do">파일업로드(멀티파일)</a></li>
+			
 		</ul>
-		
-		<div class="spring" onclick="myAlert();">
-			여기를 클릭하세요.
-		</div>
 	</body>
 </html>

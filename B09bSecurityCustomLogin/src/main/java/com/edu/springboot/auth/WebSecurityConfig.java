@@ -1,5 +1,6 @@
 package com.edu.springboot.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,9 @@ import jakarta.servlet.DispatcherType;
 @Configuration
 public class WebSecurityConfig
 {
+	@Autowired
+	public MyAuthFailureHandler myAuthFailureHandler;
+	
 	@Bean
 	public SecurityFilterChain filterChanin(HttpSecurity http) throws Exception
 	{
@@ -30,9 +34,22 @@ public class WebSecurityConfig
 				.anyRequest().authenticated()
 			);
 		
-		http.formLogin((formLogin) -> formLogin.permitAll());
+		http.formLogin((formLogin) -> formLogin
+				.loginPage("/myLogin.do")
+				.loginProcessingUrl("/myLoginAction.do")
+//				.failureUrl("/myError.do")
+				.failureHandler(myAuthFailureHandler)
+				.usernameParameter("my_id")
+				.passwordParameter("my_pass")
+				.permitAll());
 		
-		http.logout((logout) -> logout.permitAll());
+		http.logout((logout) -> logout
+				.logoutUrl("/myLogout.do")
+				.logoutSuccessUrl("/")
+				.permitAll());
+		
+		http.exceptionHandling((expHandling) -> expHandling
+				.accessDeniedPage("/denied.do"));
 		
 		return http.build();
 	}
