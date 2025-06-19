@@ -1,0 +1,22 @@
+spring.application.name=B14aSMTP_Naver
+
+# 포트 설정
+server.port=8081
+
+#JSP설정
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username="iamstudybox00@gmail.com"
+spring.mail.password="vxji kgen kaoc qheh"
+
+spring.mail.properties.mail.debug=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.auth=false
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.ssl.enable=true
+#spring.mail.properties.mail.smtp.ssl.trust=smtp.naver.com
