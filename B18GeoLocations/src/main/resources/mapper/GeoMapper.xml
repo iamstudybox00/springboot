@@ -5,5 +5,27 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.edu.springboot.mybatis.ISearchRadius">
+	<select id="searchCount" resultType="int">
+		SELECT COUNT(*) FROM global_facility
+		WHERE TRUNC(to_number(DISTNACE_WGS84(#{param2}, #{param3},
+			hp_latitude, hp_longitude)), 5)<![CDATA[<=]]>#{param1}
+	</select>
 	
+	<select id="searchRadius" 
+		resultType="com.edu.springboot.mybatis.MyFacilityDTO">
+		SELECT * FROM (
+			SELECT Tb.*, rownum rNum FROM (
+				SELECT
+					hp_name, hp_sido, hp_gugun, hp_addr, hp_url,
+					hp_latitude, hp_longitude,
+					TRUNC(to_number(DISTNACE_WGS84(#{param2}, #{param3},
+						hp_latitude, hp_longitude)), 5) AS disKM
+				FROM global_facility
+				WHERE TRUNC(to_number(DISTNACE_WGS84(#{param2}, #{param3},
+					hp_latitude, hp_longitude)), 5)<![CDATA[<=]]>#{param1}
+				ORDER BY disKM ASC
+			) Tb
+		)	
+		WHERE rNum BETWEEN ${param4} AND ${param5}
+	</select>
 </mapper>

@@ -39,7 +39,6 @@
 				
 				document.getElementById("lat").value = latitude;
 				document.getElementById("lng").value = longitude;
-				
 			}
 			
 			var showError = function(error){
